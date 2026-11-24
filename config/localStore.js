@@ -5,11 +5,17 @@ import { hashPassword, comparePassword } from "../utils/Password.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const dataDir = path.join(__dirname, "../data");
-const dataFile = path.join(dataDir, "db.json");
+const isVercel = !!(process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME);
+const bundledDataFile = path.join(__dirname, "../data/db.json");
+const dataDir = isVercel ? "/tmp" : path.join(__dirname, "../data");
+const dataFile = isVercel ? "/tmp/db.json" : bundledDataFile;
 
-if (!fs.existsSync(dataDir)) {
-  fs.mkdirSync(dataDir, { recursive: true });
+try {
+  if (!fs.existsSync(dataDir)) {
+    fs.mkdirSync(dataDir, { recursive: true });
+  }
+} catch (e) {
+  // Silent fallback for read-only environments
 }
 
 let memoryDB = {
@@ -20,13 +26,20 @@ let memoryDB = {
 };
 
 const loadData = () => {
-  if (fs.existsSync(dataFile)) {
-    try {
-      const content = fs.readFileSync(dataFile, "utf-8");
-      memoryDB = JSON.parse(content);
-    } catch (e) {
-      console.error("Error reading fallback db file:", e);
+  try {
+    if (isVercel && !fs.existsSync(dataFile) && fs.existsSync(bundledDataFile)) {
+      try {
+        fs.copyFileSync(bundledDataFile, dataFile);
+      } catch (e) {}
     }
+
+    const fileToRead = fs.existsSync(dataFile) ? dataFile : (fs.existsSync(bundledDataFile) ? bundledDataFile : null);
+    if (fileToRead) {
+      const content = fs.readFileSync(fileToRead, "utf-8");
+      memoryDB = JSON.parse(content);
+    }
+  } catch (e) {
+    console.error("Error reading fallback db file:", e);
   }
 };
 
@@ -34,7 +47,7 @@ const saveData = () => {
   try {
     fs.writeFileSync(dataFile, JSON.stringify(memoryDB, null, 2), "utf-8");
   } catch (e) {
-    console.error("Error writing fallback db file:", e);
+    // Write failed (e.g. read-only filesystem), continue in-memory
   }
 };
 

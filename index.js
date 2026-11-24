@@ -28,9 +28,21 @@ app.use(
   cors({
     origin: "*",
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    allowedHeaders: ["Origin", "X-Requested-With", "Content-Type", "Accept", "Authorization"],
+    credentials: true,
   })
 );
+
+// Manual CORS fallback headers on every response
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+  next();
+});
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -58,8 +70,9 @@ app.get("/", (req, res) => {
 // Export Express app for Vercel Serverless
 export default app;
 
-// Start Server locally
-if (!process.env.VERCEL) {
+// Start Server locally when run directly (e.g. `node index.js`)
+const isDirectRun = process.argv[1] && process.argv[1].endsWith("index.js") && !process.argv[1].includes("/api/");
+if (isDirectRun && !process.env.VERCEL && !process.env.AWS_LAMBDA_FUNCTION_NAME) {
   app.listen(PORT, "0.0.0.0", () => {
     console.log(`\x1b[32m✔ Server running on http://0.0.0.0:${PORT}\x1b[0m`);
     console.log(`\x1b[36m✔ API endpoints available at http://localhost:${PORT}/api/\x1b[0m`);
