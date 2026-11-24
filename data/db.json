@@ -1,0 +1,147 @@
+{
+  "users": [
+    {
+      "_id": "usr_admin_1",
+      "id": "usr_admin_1",
+      "username": "admin",
+      "password": "$2a$10$VXniItvKyH2mpOcEyC9JMuTRcNOadmqmTjtjd.RsrAtPoh4gYq0SC",
+      "email": "admin@xtremeshoes.com",
+      "role": "admin",
+      "createdAt": "2026-11-24T15:58:07.516Z"
+    }
+  ],
+  "categories": [
+    {
+      "id": "cat_1",
+      "_id": "cat_1",
+      "name": "Sneakers",
+      "description": "Streetwear & lifestyle kicks",
+      "is_active": true,
+      "is_deleted": false
+    },
+    {
+      "id": "cat_2",
+      "_id": "cat_2",
+      "name": "Running Shoes",
+      "description": "High-mileage responsive runners",
+      "is_active": true,
+      "is_deleted": false
+    },
+    {
+      "id": "cat_3",
+      "_id": "cat_3",
+      "name": "Basketball",
+      "description": "High-top court traction shoes",
+      "is_active": true,
+      "is_deleted": false
+    },
+    {
+      "id": "cat_4",
+      "_id": "cat_4",
+      "name": "Casual & Loafers",
+      "description": "Everyday comfort footwear",
+      "is_active": true,
+      "is_deleted": false
+    },
+    {
+      "id": "cat_5",
+      "_id": "cat_5",
+      "name": "Outdoor & Trail",
+      "description": "All-terrain rugged silhouettes",
+      "is_active": true,
+      "is_deleted": false
+    }
+  ],
+  "products": [
+    {
+      "id": "prod_1",
+      "_id": "prod_1",
+      "name": "Nike Air Max Pulse",
+      "category": "cat_1",
+      "category_name": "Sneakers",
+      "price": 139.99,
+      "color": "Black / Wolf Grey",
+      "size": "UK 7, UK 8, UK 9, UK 10, UK 11",
+      "stock": 25,
+      "description": "Point-loaded Air unit engineered for supreme bounce.",
+      "is_active": true,
+      "is_deleted": false,
+      "createdAt": "2026-11-24T15:58:07.523Z"
+    },
+    {
+      "id": "prod_2",
+      "_id": "prod_2",
+      "name": "Adidas Ultraboost Light",
+      "category": "cat_2",
+      "category_name": "Running Shoes",
+      "price": 189.99,
+      "color": "Core Black / Cloud White",
+      "size": "UK 7, UK 8, UK 9, UK 10",
+      "stock": 18,
+      "description": "Ultralight BOOST foam providing continuous propulsion.",
+      "is_active": true,
+      "is_deleted": false,
+      "createdAt": "2026-11-24T15:58:07.523Z"
+    },
+    {
+      "id": "prod_3",
+      "_id": "prod_3",
+      "name": "Air Jordan Retro 1 High",
+      "category": "cat_3",
+      "category_name": "Basketball",
+      "price": 199.99,
+      "color": "Chicago Red / White / Black",
+      "size": "UK 8, UK 9, UK 10, UK 11, UK 12",
+      "stock": 12,
+      "description": "Iconic collector high-top in heritage Chicago colors.",
+      "is_active": true,
+      "is_deleted": false,
+      "createdAt": "2026-11-24T15:58:07.523Z"
+    },
+    {
+      "id": "prod_4",
+      "_id": "prod_4",
+      "name": "Puma Velocity Nitro 3",
+      "category": "cat_2",
+      "category_name": "Running Shoes",
+      "price": 129.99,
+      "color": "Electric Lime / Black",
+      "size": "UK 7, UK 8, UK 9, UK 10",
+      "stock": 30,
+      "description": "Explosive energy rebound with PUMAGRIP traction rubber.",
+      "is_active": true,
+      "is_deleted": false,
+      "createdAt": "2026-11-24T15:58:07.523Z"
+    },
+    {
+      "id": "prod_5",
+      "_id": "prod_5",
+      "name": "New Balance 9060 Chunky",
+      "category": "cat_1",
+      "category_name": "Sneakers",
+      "price": 159.99,
+      "color": "Rain Cloud / Castlerock",
+      "size": "UK 7, UK 8, UK 9, UK 10, UK 11",
+      "stock": 15,
+      "description": "Exaggerated Y2K midsole with sculpted dual-density ABZORB.",
+      "is_active": true,
+      "is_deleted": false,
+      "createdAt": "2026-11-24T15:58:07.523Z"
+    },
+    {
+      "id": "prod_6",
+      "_id": "prod_6",
+      "name": "Salomon XT-6 Gore-Tex",
+      "category": "cat_5",
+      "category_name": "Outdoor & Trail",
+      "price": 210,
+      "color": "Phantom / Black",
+      "size": "UK 8, UK 9, UK 10, UK 11",
+      "stock": 10,
+      "description": "Legendary trail icon featuring waterproof membrane and ACS chassis.",
+      "is_active": true,
+      "is_deleted": false,
+      "createdAt": "2026-11-24T15:58:07.523Z"
+    }
+  ]
+}
