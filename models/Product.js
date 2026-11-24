@@ -13,13 +13,29 @@ const ProductSchema = new mongoose.Schema(
     },
     price: {
       type: Number,
-      required: true,
+      required: false,
+      default: 0,
+      min: 0,
+    },
+    min_price: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    max_price: {
+      type: Number,
+      default: 0,
       min: 0,
     },
     category: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",
       required: true,
+    },
+    brand: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Brand",
+      default: null,
     },
     image: {
       type: String,
@@ -69,6 +85,10 @@ ProductSchema.set("toJSON", {
     if (returnedObject.category && typeof returnedObject.category === "object") {
       returnedObject.category_name = returnedObject.category.name;
       returnedObject.category = returnedObject.category._id ? returnedObject.category._id.toString() : returnedObject.category;
+    }
+    if (returnedObject.brand && typeof returnedObject.brand === "object") {
+      returnedObject.brand_name = returnedObject.brand.name;
+      returnedObject.brand = returnedObject.brand._id ? returnedObject.brand._id.toString() : returnedObject.brand;
     }
     delete returnedObject.__v;
   },

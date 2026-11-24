@@ -8,6 +8,7 @@ import { fileURLToPath } from "url";
 import { connectDB } from "./config/db.js";
 import authRouter from "./routers/AuthRouter.js";
 import categoryRouter from "./routers/CategoryRouter.js";
+import brandRouter from "./routers/BrandRouter.js";
 import productRouter from "./routers/ProductRouter.js";
 import statsRouter from "./routers/StatsRouter.js";
 
@@ -41,6 +42,7 @@ app.use("/media", express.static(path.join(__dirname, "public/uploads")));
 // API Routes (matching structure)
 app.use("/api/auth", authRouter);
 app.use("/api/categories", categoryRouter);
+app.use("/api/brands", brandRouter);
 app.use("/api/products", productRouter);
 app.use("/api/stats", statsRouter);
 

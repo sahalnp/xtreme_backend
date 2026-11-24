@@ -15,6 +15,7 @@ if (!fs.existsSync(dataDir)) {
 let memoryDB = {
   users: [],
   categories: [],
+  brands: [],
   products: [],
 };
 
@@ -63,6 +64,18 @@ const initSeed = async () => {
       { id: "cat_5", _id: "cat_5", name: "Outdoor & Trail", description: "All-terrain rugged silhouettes", is_active: true, is_deleted: false },
     ];
     memoryDB.categories = cats;
+  }
+
+  if (!memoryDB.brands || memoryDB.brands.length === 0) {
+    const defaultBrands = [
+      { id: "brand_1", _id: "brand_1", name: "Nike", description: "Just Do It", is_active: true, is_deleted: false },
+      { id: "brand_2", _id: "brand_2", name: "Adidas", description: "Impossible Is Nothing", is_active: true, is_deleted: false },
+      { id: "brand_3", _id: "brand_3", name: "Air Jordan", description: "Jumpman Heritage", is_active: true, is_deleted: false },
+      { id: "brand_4", _id: "brand_4", name: "Puma", description: "Forever Faster", is_active: true, is_deleted: false },
+      { id: "brand_5", _id: "brand_5", name: "New Balance", description: "Fearlessly Independent", is_active: true, is_deleted: false },
+      { id: "brand_6", _id: "brand_6", name: "Salomon", description: "Tomorrow is a game", is_active: true, is_deleted: false },
+    ];
+    memoryDB.brands = defaultBrands;
   }
 
   if (memoryDB.products.length === 0) {
@@ -172,6 +185,25 @@ export const localStore = {
   getCategories: (includeDeleted = false) => {
     return memoryDB.categories.filter((c) => includeDeleted || !c.is_deleted);
   },
+  getBrands: (includeDeleted = false) => {
+    return (memoryDB.brands || []).filter((b) => includeDeleted || !b.is_deleted);
+  },
+  createBrand: (data) => {
+    if (!memoryDB.brands) memoryDB.brands = [];
+    const id = "brand_" + Date.now();
+    const newBrand = {
+      id,
+      _id: id,
+      name: data.name,
+      description: data.description || "",
+      is_active: data.is_active !== undefined ? data.is_active : true,
+      is_deleted: false,
+      createdAt: new Date().toISOString(),
+    };
+    memoryDB.brands.push(newBrand);
+    saveData();
+    return newBrand;
+  },
   createCategory: (data) => {
     const id = "cat_" + Date.now();
     const newCat = {
@@ -228,18 +260,30 @@ export const localStore = {
   createProduct: (data) => {
     const id = "prod_" + Date.now();
     const cat = memoryDB.categories.find((c) => c.id === data.category || c._id === data.category);
+    let brandName = data.brand_name || "";
+    if (data.brand && memoryDB.brands) {
+      const b = memoryDB.brands.find((x) => x.id === data.brand || x._id === data.brand);
+      if (b) brandName = b.name;
+    }
     const newProd = {
       id,
       _id: id,
       name: data.name,
       category: data.category,
       category_name: cat ? cat.name : "Sneakers",
-      price: parseFloat(data.price) || 0,
+      brand: data.brand || null,
+      brand_name: brandName,
+      price: parseFloat(data.price) || parseFloat(data.min_price) || 0,
+      min_price: parseFloat(data.min_price) || (data.price ? parseFloat(data.price) * 0.9 : 0),
+      max_price: parseFloat(data.max_price) || (data.price ? parseFloat(data.price) * 1.2 : 0),
       color: data.color || "Black",
       size: data.size || "UK 7, UK 8, UK 9, UK 10",
       stock: parseInt(data.stock, 10) || 15,
       description: data.description || "",
       image: data.image || "",
+      image2: data.image2 || "",
+      image3: data.image3 || "",
+      image4: data.image4 || "",
       is_active: data.is_active !== undefined ? (data.is_active === "true" || data.is_active === true) : true,
       is_deleted: false,
       createdAt: new Date().toISOString(),
@@ -255,8 +299,14 @@ export const localStore = {
         const cat = memoryDB.categories.find((c) => c.id === data.category || c._id === data.category);
         if (cat) data.category_name = cat.name;
       }
-      if (data.price) data.price = parseFloat(data.price);
-      if (data.stock) data.stock = parseInt(data.stock, 10);
+      if (data.brand && memoryDB.brands) {
+        const b = memoryDB.brands.find((x) => x.id === data.brand || x._id === data.brand);
+        if (b) data.brand_name = b.name;
+      }
+      if (data.price !== undefined) data.price = parseFloat(data.price);
+      if (data.min_price !== undefined) data.min_price = parseFloat(data.min_price);
+      if (data.max_price !== undefined) data.max_price = parseFloat(data.max_price);
+      if (data.stock !== undefined) data.stock = parseInt(data.stock, 10);
       if (data.is_active !== undefined) {
         data.is_active = data.is_active === "true" || data.is_active === true;
       }

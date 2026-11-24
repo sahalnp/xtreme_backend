@@ -92,9 +92,9 @@ export const getProductById = async (req, res) => {
 
 export const createProduct = async (req, res) => {
   try {
-    const { name, category, price, color, size, stock, description, is_active } = req.body;
-    if (!name || !price || !category) {
-      return res.status(400).json({ error: "Name, price and category are required" });
+    const { name, category, brand, price, min_price, max_price, color, size, stock, description, is_active } = req.body;
+    if (!name || (!price && !min_price) || !category) {
+      return res.status(400).json({ error: "Name, price/price range and category are required" });
     }
 
     const files = req.files || [];
@@ -110,11 +110,18 @@ export const createProduct = async (req, res) => {
       else if (f.fieldname === "image4") image4 = f.filename;
     });
 
+    const parsedMinPrice = min_price ? parseFloat(min_price) : (price ? parseFloat(price) * 0.9 : 0);
+    const parsedMaxPrice = max_price ? parseFloat(max_price) : (price ? parseFloat(price) * 1.2 : 0);
+    const parsedPrice = price ? parseFloat(price) : parsedMinPrice;
+
     if (mongoose.connection.readyState === 1) {
       const newProd = new Product({
         name,
         category,
-        price: parseFloat(price),
+        brand: brand || null,
+        price: parsedPrice,
+        min_price: parsedMinPrice,
+        max_price: parsedMaxPrice,
         color: color || "Black",
         size: size || "UK 7, UK 8, UK 9, UK 10",
         stock: parseInt(stock, 10) || 15,
@@ -128,13 +135,16 @@ export const createProduct = async (req, res) => {
       });
 
       await newProd.save();
-      const populated = await Product.findById(newProd._id).populate("category", "name");
+      const populated = await Product.findById(newProd._id).populate("category", "name").populate("brand", "name");
       return res.status(201).json(formatProductImageUrl(req, populated));
     } else {
       const newProd = localStore.createProduct({
         name,
         category,
-        price,
+        brand,
+        price: parsedPrice,
+        min_price: parsedMinPrice,
+        max_price: parsedMaxPrice,
         color,
         size,
         stock,
