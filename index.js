@@ -55,9 +55,14 @@ app.get("/", (req, res) => {
   });
 });
 
-// Start Server
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`\x1b[32m✔ Server running on http://0.0.0.0:${PORT}\x1b[0m`);
-  console.log(`\x1b[36m✔ API endpoints available at http://localhost:${PORT}/api/\x1b[0m`);
-});
+// Export Express app for Vercel Serverless
+export default app;
+
+// Start Server locally
+if (!process.env.VERCEL) {
+  app.listen(PORT, "0.0.0.0", () => {
+    console.log(`\x1b[32m✔ Server running on http://0.0.0.0:${PORT}\x1b[0m`);
+    console.log(`\x1b[36m✔ API endpoints available at http://localhost:${PORT}/api/\x1b[0m`);
+  });
+}
 
