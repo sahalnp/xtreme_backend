@@ -252,6 +252,7 @@ export const localStore = {
   },
 
   getProducts: (filter = {}) => {
+    loadData();
     let prods = [...memoryDB.products];
     if (filter.admin !== true) {
       prods = prods.filter((p) => !p.is_deleted && p.is_active);
@@ -269,9 +270,14 @@ export const localStore = {
     }
     return prods;
   },
-  findProductById: (id) => memoryDB.products.find((p) => p.id === id || p._id === id),
+  findProductById: (id) => {
+    loadData();
+    const cleanId = (id || "").toString().trim();
+    return memoryDB.products.find((p) => (p.id || "").toString() === cleanId || (p._id || "").toString() === cleanId);
+  },
   createProduct: (data) => {
-    const id = "prod_" + Date.now();
+    loadData();
+    const id = data.id || data._id || ("prod_" + Date.now());
     const cat = memoryDB.categories.find((c) => c.id === data.category || c._id === data.category);
     let brandName = data.brand_name || "";
     if (data.brand && memoryDB.brands) {
@@ -306,7 +312,16 @@ export const localStore = {
     return newProd;
   },
   updateProduct: (id, data) => {
-    const idx = memoryDB.products.findIndex((p) => p.id === id || p._id === id);
+    loadData();
+    const cleanId = (id || "").toString().trim();
+    let idx = memoryDB.products.findIndex((p) => (p.id || "").toString() === cleanId || (p._id || "").toString() === cleanId);
+    
+    // Fallback: match by product name if ID didn't match
+    if (idx === -1 && data.name) {
+      const targetName = data.name.trim().toLowerCase();
+      idx = memoryDB.products.findIndex((p) => p.name && p.name.trim().toLowerCase() === targetName);
+    }
+
     if (idx !== -1) {
       if (data.category) {
         const cat = memoryDB.categories.find((c) => c.id === data.category || c._id === data.category);

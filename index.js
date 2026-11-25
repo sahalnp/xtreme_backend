@@ -47,7 +47,12 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Static uploads & media directory
+// Static uploads & media directory (serves from /tmp on Vercel and public/uploads locally)
+const isVercel = !!(process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME);
+if (isVercel) {
+  app.use("/uploads", express.static("/tmp"));
+  app.use("/media", express.static("/tmp"));
+}
 app.use("/uploads", express.static(path.join(__dirname, "public/uploads")));
 app.use("/media", express.static(path.join(__dirname, "public/uploads")));
 
